@@ -33,7 +33,7 @@ f = (fd_dist(init_T, Ex))
 print(Ex, f)
 
 ## Plotting part starts 
-# plt.style.use('dark_background') #comment this out for light mode
+plt.style.use('dark_background') #comment this out for light mode
 
 fig, ax = plt.subplots()
 ax.set_title(f'Fermi-Dirac Distribution for {element}')
@@ -62,4 +62,4 @@ T_Slider.on_changed(update_T)
 ax.set(xlim=(0, Ex[len(Ex)-1]),
        ylim=(0, f[len(f)-1])[0])
 
-plt.show()
+plt.show()	
