@@ -7,6 +7,7 @@ nuclear_system = True
 element = 'Nucleon'
 g = 1
 n = 20 # total no of energy levels in the interval 0 to 2*Ef (for visuals)
+Tarr = [0, 2, 6]
 
 # Source of fermi energy values: http://hyperphysics.phy-astr.gsu.edu/hbase/Tables/fermi.html
 # Originally refered at: Ashcroft, N. W. and Mermin, N. D., Solid State Physics, Saunders, 1976.
@@ -42,8 +43,7 @@ Ef = fermi_energy[element]
 def fd_dist(T, E):
 	return g/(1 + np.exp((E - Ef)/(k*T)))
 
-Ex = np.linspace(0, 2*Ef, n)
-f = (fd_dist(init_T, Ex))
+
 
 # print(Ex, f)
 
@@ -54,30 +54,14 @@ fig, ax = plt.subplots()
 ax.set_title(f'Fermi-Dirac Distribution for {element} (Ef = {fermi_energy[element]}{energy_unit})')
 ax.set_xlabel(f'Energy, E [{energy_unit}]')
 ax.set_ylabel('population, f(E)')
-fig.subplots_adjust(bottom=0.25)
 
-# curve, = ax.plot(Ex, f, linewidth=2.0) #for curve
-points  = ax.scatter(Ex, f, color='#DD1214')
-
-axT = fig.add_axes([0.25, 0.1, 0.65, 0.03])
-T_Slider = Slider(
-    ax=axT,
-    label=f"Temperature [{temp_unit}]",
-    valmin=0,
-    valmax=fin_T,
-    valinit=init_T,
-    orientation="horizontal"
-)
-
-def update_T(val):
-	xx = np.vstack((Ex, fd_dist(T_Slider.val, Ex)))
-	points.set_offsets(xx.T)
-	# curve.set_ydata(fd_dist(T_Slider.val, Ex)) #for curve
-	fig.canvas.draw_idle()
-
-T_Slider.on_changed(update_T)
+Ex = np.linspace(0, 2*Ef, n)
+for Ti in Tarr:	
+	f = (fd_dist(Ti, Ex))
+	ax.plot(Ex, f, label = f'T={Ti} {temp_unit}')
+	ax.scatter(Ex, f)
 
 ax.set(xlim=(0, Ex[len(Ex)-1]),
        ylim=(0, f[len(f)-1])[0])
-
-plt.show()	
+ax.legend()
+plt.show()
