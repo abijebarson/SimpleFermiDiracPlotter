@@ -23,5 +23,9 @@ pip install -r requirements.txt
 ## Running the code
 
 ```bash
-python fermidirac.py
+python fermidirac_static.py
+```
+or
+```bash
+python fermidirac_mu_static.py
 ```
