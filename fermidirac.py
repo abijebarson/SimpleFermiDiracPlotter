@@ -41,7 +41,8 @@ ax.set_xlabel('Energy, E [eV]')
 ax.set_ylabel('population, f(E)')
 fig.subplots_adjust(bottom=0.25)
 
-curve, = ax.plot(Ex, f, linewidth=2.0)
+# curve, = ax.plot(Ex, f, linewidth=2.0) #for curve
+points  = ax.scatter(Ex, f)
 
 axT = fig.add_axes([0.25, 0.1, 0.65, 0.03])
 T_Slider = Slider(
@@ -54,7 +55,9 @@ T_Slider = Slider(
 )
 
 def update_T(val):
-	curve.set_ydata(fd_dist(T_Slider.val, Ex))
+	xx = np.vstack((Ex, fd_dist(T_Slider.val, Ex)))
+	points.set_offsets(xx.T)
+	# curve.set_ydata(fd_dist(T_Slider.val, Ex)) #for curve
 	fig.canvas.draw_idle()
 
 T_Slider.on_changed(update_T)
