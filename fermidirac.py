@@ -36,7 +36,7 @@ print(Ex, f)
 plt.style.use('dark_background') #comment this out for light mode
 
 fig, ax = plt.subplots()
-ax.set_title(f'Fermi-Dirac Distribution for {element}')
+ax.set_title(f'Fermi-Dirac Distribution for {element} (Ef = {fermi_energy[element]}eV)')
 ax.set_xlabel('Energy, E [eV]')
 ax.set_ylabel('population, f(E)')
 fig.subplots_adjust(bottom=0.25)
