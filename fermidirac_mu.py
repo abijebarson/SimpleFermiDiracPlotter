@@ -54,7 +54,7 @@ axT = fig.add_axes([0.25, 0.1, 0.65, 0.03])
 T_Slider = Slider(
     ax=axT,
     label=f"Temperature [{temp_unit}]",
-    valmin=0,
+    valmin=0.0000001,
     valmax=fin_T,
     valinit=init_T,
     orientation="horizontal"
@@ -62,7 +62,11 @@ T_Slider = Slider(
 
 def update_T(val):
 	T = T_Slider.val
-	mu = scipy.optimize.newton(temp_func, 2, args=(T,))
+	try:
+		mu = scipy.optimize.newton(temp_func, 2, args=(T,))
+	except:
+		print(f"Can't solve at T = {T}")
+		return
 	print("mu =", mu, 'at T = ', T	)
 	xx = np.vstack((Ex, fd_dist(T, Ex, mu)))
 	points.set_offsets(xx.T)
