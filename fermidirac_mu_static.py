@@ -45,7 +45,6 @@ fig, ax = plt.subplots()
 ax.set_title(f'Fermi-Dirac Distribution for a Nuclear System')
 ax.set_xlabel(f'Energy, E [{energy_unit}]')
 ax.set_ylabel('f(E)')
-fig.subplots_adjust(bottom=0.25)
 
 for Ti in Tarr:
     mu = scipy.optimize.newton(temp_func, 2, args=(Ti,))
