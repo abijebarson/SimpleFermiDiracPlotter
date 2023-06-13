@@ -47,6 +47,7 @@ ax.set_xlabel(f'Energy, E [{energy_unit}]')
 ax.set_ylabel('f(E)')
 fig.subplots_adjust(bottom=0.25)
 
+# curve, = ax.plot(Ex, f, color='#221111')
 points  = ax.scatter(Ex, f, color='#DD1214')
 cp = ax.scatter(mu, 0.5)
 
@@ -69,6 +70,7 @@ def update_T(val):
 		return
 	print("mu =", mu, 'at T = ', T	)
 	xx = np.vstack((Ex, fd_dist(T, Ex, mu)))
+	# curve.set_ydata(fd_dist(T, Ex, mu))
 	points.set_offsets(xx.T)
 	cp.set_offsets((mu,0.5))
 	fig.canvas.draw_idle()
@@ -76,6 +78,6 @@ def update_T(val):
 T_Slider.on_changed(update_T)
 
 ax.set(xlim=(0, Ex[len(Ex)-1]+1),
-       ylim=(0, 1))
+       ylim=(0, 1.1))
 
 plt.show()
