@@ -1,63 +1,54 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+import scipy.optimize
 
-# Parameters to change:
-nuclear_system = True
-element = 'Nucleon'
-g = lambda En : 1
-n = 20 # total no of energy levels in the interval 0 to 2*Ef (for visuals)
+###### Parameters to change: ######
+#=================================#
+g = lambda En : (En + 1)*(En + 2)
+n = 30
 
-# Source of fermi energy values: http://hyperphysics.phy-astr.gsu.edu/hbase/Tables/fermi.html
-# Originally refered at: Ashcroft, N. W. and Mermin, N. D., Solid State Physics, Saunders, 1976.
-fermi_energy_a = {
-	'Li':4.74,
-	'Na':3.24,
-	'K': 2.12,
-	'Rb': 1.85,
-	'Cs':1.59,
-}
+temp_unit = 'MeV'
+init_T = 0.1 # in MeV
+fin_T = 1
 
-fermi_energy_n = {
-	'Nucleon':38 #Typical nucleon
-}
+energy_unit = 'MeV'
+init_En = 0
+fin_En = 10
+energy_discreteness = 1
 
-if nuclear_system:
-	temp_unit = 'MeV'
-	energy_unit = 'MeV'
-	fermi_energy = fermi_energy_n
-	init_T = 1 # in MeV
-	fin_T = 10
-	k = 1 # ignoring Boltzman Constant, since it is included in Temperature
-else:
-	temp_unit = 'K'
-	energy_unit = 'eV'
-	fermi_energy = fermi_energy_a
-	init_T  = 250 # in K
-	fin_T = 10000 # in K
-	k = 8.617333262e-5 # in eV K^-1
+###################################
 
-Ef = fermi_energy[element]
+k = 1 # ignoring Boltzman Constant, since it is included in Temperature
 
-def fd_dist(T, E):
+def fd_dist(T, E, Ef):
 	return 1/(1 + np.exp((E - Ef)/(k*T)))
+	
+En = np.arange(init_En, fin_En, energy_discreteness)
+Ex = (En+1.5)*1.5
+garr = g(En)
 
-Ex = np.linspace(0, 2*Ef, n)
-f = fd_dist(init_T, Ex)
+def temp_func(Ef, T):
+	f = fd_dist(T, Ex, Ef)
+	Narr = f * garr
+	return sum(Narr)-n
 
-# print(Ex, f)
+mu = scipy.optimize.newton(temp_func, 2, args=(init_T,))
 
-## Plotting part starts 
-plt.style.use('dark_background') #comment this out for light mode
+print("Chemical potential =", mu, 'at T = ', init_T)
+
+f =  fd_dist(init_T, Ex, mu)
+
+plt.style.use('dark_background') 
 
 fig, ax = plt.subplots()
-ax.set_title(f'Fermi-Dirac Distribution for {element} (Ef = {fermi_energy[element]}{energy_unit})')
+ax.set_title(f'Fermi-Dirac Distribution for a Nuclear System')
 ax.set_xlabel(f'Energy, E [{energy_unit}]')
-ax.set_ylabel('population, f(E)')
+ax.set_ylabel('f(E)')
 fig.subplots_adjust(bottom=0.25)
 
-# curve, = ax.plot(Ex, f, linewidth=2.0) #for curve
 points  = ax.scatter(Ex, f, color='#DD1214')
+cp = ax.scatter(mu, 0.5)
 
 axT = fig.add_axes([0.25, 0.1, 0.65, 0.03])
 T_Slider = Slider(
@@ -70,14 +61,17 @@ T_Slider = Slider(
 )
 
 def update_T(val):
-	xx = np.vstack((Ex, fd_dist(T_Slider.val, Ex)))
+	T = T_Slider.val
+	mu = scipy.optimize.newton(temp_func, 2, args=(T,))
+	print("mu =", mu, 'at T = ', T	)
+	xx = np.vstack((Ex, fd_dist(T, Ex, mu)))
 	points.set_offsets(xx.T)
-	# curve.set_ydata(fd_dist(T_Slider.val, Ex)) #for curve
+	cp.set_offsets((mu,0.5))
 	fig.canvas.draw_idle()
 
 T_Slider.on_changed(update_T)
 
-ax.set(xlim=(0, Ex[len(Ex)-1]),
-       ylim=(0, f[len(f)-1])[0])
+ax.set(xlim=(0, Ex[len(Ex)-1]+1),
+       ylim=(0, 1))
 
-plt.show()	
+plt.show()
