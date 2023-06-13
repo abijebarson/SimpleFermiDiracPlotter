@@ -22,7 +22,7 @@ k = 8.617333262e-5 # in eV K^-1
 
 # Parameters to change:
 g = 1 # Degeneracy
-n = 100 # total no of energy levels to evaluate
+n = 20 # total no of energy levels to evaluate
 
 def fd_dist(T, E):
 	return g/(1 + np.exp((E - Ef)/(k*T)))
@@ -42,7 +42,7 @@ ax.set_ylabel('population, f(E)')
 fig.subplots_adjust(bottom=0.25)
 
 # curve, = ax.plot(Ex, f, linewidth=2.0) #for curve
-points  = ax.scatter(Ex, f)
+points  = ax.scatter(Ex, f, color='#DD1214')
 
 axT = fig.add_axes([0.25, 0.1, 0.65, 0.03])
 T_Slider = Slider(
