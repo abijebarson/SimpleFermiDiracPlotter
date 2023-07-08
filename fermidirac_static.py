@@ -56,12 +56,13 @@ ax.set_xlabel(f'Energy, E [{energy_unit}]')
 ax.set_ylabel('population, f(E)')
 
 Ex = np.linspace(0, 2*Ef, n)
+f = [0]
 for Ti in Tarr:	
 	f = (fd_dist(Ti, Ex))
 	ax.plot(Ex, f, label = f'T={Ti} {temp_unit}')
 	ax.scatter(Ex, f)
 
-ax.set(xlim=(0, Ex[len(Ex)-1]),
-       ylim=(0, f[len(f)-1])[0])
+ax.set(xlim=(0, Ex[-1]),
+       ylim=(0, f[-1])[0])
 ax.legend()
 plt.show()
